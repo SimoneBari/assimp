@@ -268,6 +268,9 @@ struct Node {
     /** Root-nodes: Name of primary camera, if any */
     std::string mPrimaryCamera;
 
+    /** Metadata holder**/
+    std::map<std::string, std::string> mMetadata;
+
     //! Constructor. Begin with a zero parent
     Node() :
             mParent(nullptr) {

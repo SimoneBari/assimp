@@ -2606,7 +2606,16 @@ void ColladaParser::ReadSceneNode(Node *pNode) {
                     pNode->mCameras.push_back(CameraInstance());
                     pNode->mCameras.back().mCamera = url + 1;
                 }
-            } else {
+            } else if (IsElement("extra")) {
+                int attrID = TestAttribute("id");
+                if (-1 == attrID)
+                    ASSIMP_LOG_WARN("Collada: expected id attribute in <extra>");
+                else {
+                    std::string url = mReader->getAttributeValue(attrID);
+                    std::string val = GetTextContent();
+                    pNode->mMetadata.insert({url, val});
+                }
+            } else{
                 // skip everything else for the moment
                 SkipElement();
             }

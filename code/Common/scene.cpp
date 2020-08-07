@@ -49,7 +49,8 @@ aiNode::aiNode()
 , mChildren(nullptr)
 , mNumMeshes(0)
 , mMeshes(nullptr)
-, mMetaData(nullptr) {
+, mMetaData(nullptr)
+, mCustomData(nullptr){
     // empty
 }
 

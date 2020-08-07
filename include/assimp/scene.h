@@ -134,6 +134,8 @@ struct ASSIMP_API aiNode
       */
     C_STRUCT aiMetadata* mMetaData;
 
+    C_STRUCT aiMetadata* mCustomData;
+
 #ifdef __cplusplus
     /** Constructor */
     aiNode();
@@ -340,6 +342,14 @@ struct aiScene
      *  can be used to store format-specific metadata as well.
      */
     C_STRUCT aiMetadata* mMetaData;
+
+    /**
+     *  @brief  The global metadata assigned to the scene itself.
+     *
+     *  This data contains global metadata which belongs to the scene used
+     *  by my engine
+     */
+    C_STRUCT aiMetadata* mCustomData;
 
 
 #ifdef __cplusplus

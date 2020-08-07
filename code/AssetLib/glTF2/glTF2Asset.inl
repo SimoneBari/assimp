@@ -1174,6 +1174,15 @@ inline void Mesh::Read(Value &pJSON_Object, Asset &pAsset_Root) {
                 }
             }
         }
+
+        extras->RemoveMember("targetNames");
+        for (auto iter = extras->MemberBegin(); iter!=extras->MemberEnd(); iter++)
+        {
+            if (iter->value.IsString())
+            {
+                this->properties[iter->name.GetString()] = aiString(iter->value.GetString());
+            }
+        }
     }
 }
 
@@ -1304,6 +1313,17 @@ inline void Node::Read(Value &obj, Asset &r) {
         ReadMember(obj, "rotation", rotation);
     }
 
+    Value *extras = FindObject(obj, "extras");
+    if (nullptr != extras) {
+        for (auto iter = extras->MemberBegin(); iter!=extras->MemberEnd(); iter++)
+        {
+            if (iter->value.IsString())
+            {
+                this->properties[iter->name.GetString()] = aiString(iter->value.GetString());
+            }
+        }
+    }
+
     Value *curMesh = FindUInt(obj, "mesh");
     if (nullptr != curMesh) {
         unsigned int numMeshes = 1;
@@ -1348,6 +1368,19 @@ inline void Node::Read(Value &obj, Asset &r) {
 }
 
 inline void Scene::Read(Value &obj, Asset &r) {
+
+    Value* extras = FindObject(obj, "extras");
+    if (extras != nullptr)
+    {
+        for (auto iter = extras->MemberBegin(); iter!=extras->MemberEnd(); iter++)
+        {
+            if (iter->value.IsString())
+            {
+                this->properties[iter->name.GetString()] = aiString(iter->value.GetString());
+            }
+        }
+    }
+
     if (Value *array = FindArray(obj, "nodes")) {
         for (unsigned int i = 0; i < array->Size(); ++i) {
             if (!(*array)[i].IsUint()) continue;

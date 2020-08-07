@@ -74,9 +74,47 @@ struct Tangent {
 };
 } // namespace
 
+// Add an item of metadata to a node
+// Assumes the key is not already in the list
+template <typename T>
+inline void AddNodeMetaData(aiNode *node, const std::string &key, const T &value) {
+    if (nullptr == node->mMetaData) {
+        node->mMetaData = new aiMetadata();
+    }
+    node->mMetaData->Add(key, value);
+}
+
+template <typename T>
+inline void AddNodeCustomData(aiNode *node, const std::string &key, const T &value) {
+    if (nullptr == node->mCustomData) {
+        node->mCustomData = new aiMetadata();
+    }
+    node->mCustomData->Add(key, value);
+}
+
+// Add an item of metadata to a scene
+// Assumes the key is not already in the list
+template <typename T>
+inline void AddSceneCustomData(aiScene *scene, const std::string &key, const T &value) {
+    if (nullptr == scene->mCustomData) {
+        scene->mCustomData = new aiMetadata();
+    }
+    scene->mCustomData->Add(key, value);
+}
+
+// Add an item of metadata to a mesh
+// Assumes the key is not already in the list
+template <typename T>
+inline void AddMeshCustomData(aiMesh *mesh, const std::string &key, const T &value) {
+    if (nullptr == mesh->mCustomData) {
+        mesh->mCustomData = new aiMetadata();
+    }
+    mesh->mCustomData->Add(key, value);
+}
 //
 // glTF2Importer
 //
+
 
 static const aiImporterDesc desc = {
 	"glTF2 Importer",
@@ -362,6 +400,10 @@ void glTF2Importer::ImportMeshes(glTF2::Asset &r) {
 			Mesh::Primitive &prim = mesh.primitives[p];
 
 			aiMesh *aim = new aiMesh();
+
+			for (auto& prop: mesh.properties)
+                AddMeshCustomData(aim, prop.first, prop.second);
+
 			meshes.push_back(std::unique_ptr<aiMesh>(aim));
 
 			aim->mName = mesh.name.empty() ? mesh.id : mesh.name;
@@ -912,7 +954,8 @@ aiNode *ImportNode(aiScene *pScene, glTF2::Asset &r, std::vector<unsigned int> &
 	GetNodeTransform(ainode->mTransformation, node);
 
 	if (!node.meshes.empty()) {
-		// GLTF files contain at most 1 mesh per node.
+
+	    // GLTF files contain at most 1 mesh per node.
 		assert(node.meshes.size() == 1);
 		int mesh_idx = node.meshes[0].GetIndex();
 		int count = meshOffsets[mesh_idx + 1] - meshOffsets[mesh_idx];
@@ -1012,6 +1055,9 @@ aiNode *ImportNode(aiScene *pScene, glTF2::Asset &r, std::vector<unsigned int> &
 			}
 		}
 	}
+
+	for (auto& prop : node.properties)
+	    AddNodeCustomData(ainode, prop.first, prop.second);
 
 	return ainode;
 }
@@ -1388,6 +1434,12 @@ void glTF2Importer::InternReadFile(const std::string &pFile, aiScene *pScene, IO
 	glTF2::Asset asset(pIOHandler);
 	asset.Load(pFile, GetExtension(pFile) == "glb");
 
+
+	auto& scene = asset.scenes[0];
+
+    for (auto& prop : scene.properties) {
+        AddSceneCustomData(pScene, prop.first, prop.second);
+    }
 	//
 	// Copy the data out
 	//

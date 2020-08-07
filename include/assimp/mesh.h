@@ -58,6 +58,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include <assimp/aabb.h>
 #include <assimp/types.h>
+#include "metadata.h"
 
 #ifdef __cplusplus
 extern "C" {
@@ -723,6 +724,9 @@ struct aiMesh {
      */
     C_STRUCT aiAABB mAABB;
 
+    /** Metadata associated to the mesh **/
+    C_STRUCT aiMetadata* mCustomData;
+
 #ifdef __cplusplus
 
     //! Default constructor. Initializes all members to 0
@@ -744,7 +748,8 @@ struct aiMesh {
               mNumAnimMeshes(0),
               mAnimMeshes(nullptr),
               mMethod(0),
-              mAABB() {
+              mAABB(),
+              mCustomData(nullptr){
         for (unsigned int a = 0; a < AI_MAX_NUMBER_OF_TEXTURECOORDS; ++a) {
             mNumUVComponents[a] = 0;
             mTextureCoords[a] = nullptr;

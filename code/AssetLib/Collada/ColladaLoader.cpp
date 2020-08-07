@@ -276,6 +276,9 @@ aiNode *ColladaLoader::BuildHierarchy(const ColladaParser &pParser, const Collad
         }
     }
 
+    for (auto& i: pNode->mMetadata)
+        AddNodeMetaData(node, i.first, aiString(i.second));
+
     // calculate the transformation matrix for it
     node->mTransformation = pParser.CalculateResultTransform(pNode->mTransforms);
 

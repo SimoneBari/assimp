@@ -777,6 +777,8 @@ struct Mesh : public Object {
     std::vector<float> weights;
     std::vector<std::string> targetNames;
 
+    std::map<std::string, aiString> properties;
+
     Mesh() {}
 
     /// \fn void Read(Value& pJSON_Object, Asset& pAsset_Root)
@@ -834,6 +836,8 @@ struct Node : public Object {
     std::vector<Ref<Node>> children;
     std::vector<Ref<Mesh>> meshes;
 
+    std::map<std::string,aiString> properties;
+
     Nullable<mat4> matrix;
     Nullable<vec3> translation;
     Nullable<vec4> rotation;
@@ -871,6 +875,8 @@ struct Sampler : public Object {
 };
 
 struct Scene : public Object {
+
+    std::map<std::string, aiString> properties;
     std::vector<Ref<Node>> nodes;
 
     Scene() {}
